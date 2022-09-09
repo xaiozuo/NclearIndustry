@@ -1,4 +1,4 @@
-package com.weiwu.nclearindustry.entity;
+package com.weiwu.nuclearindustry.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +46,9 @@ public class User implements Serializable {
 
     @Column(length = 64)
     private String address;
+
+    @Column(length = 64)
+    private String portrait;
 
     @Column(length = 64)
     private String authority;

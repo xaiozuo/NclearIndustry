@@ -1,6 +1,6 @@
-package com.weiwu.nclearindustry.repositories;
+package com.weiwu.nuclearindustry.repositories;
 
-import com.weiwu.nclearindustry.entity.User;
+import com.weiwu.nuclearindustry.entity.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 

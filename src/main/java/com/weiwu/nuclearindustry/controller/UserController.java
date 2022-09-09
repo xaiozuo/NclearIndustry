@@ -1,7 +1,7 @@
-package com.weiwu.nclearindustry.controller;
+package com.weiwu.nuclearindustry.controller;
 
-import com.weiwu.nclearindustry.entity.User;
-import com.weiwu.nclearindustry.repositories.UserRepository;
+import com.weiwu.nuclearindustry.entity.User;
+import com.weiwu.nuclearindustry.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
