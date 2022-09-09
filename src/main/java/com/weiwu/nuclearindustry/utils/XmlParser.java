@@ -91,7 +91,17 @@ public class XmlParser {
         Element rootElement = document.getRootElement();
         List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
         HashMap<String, String> hashMap = new HashMap<>();
-        queryElement(rootElement, null, entries, hashMap);
+        if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
+        return hashMap;
+    }
+
+    public HashMap<String, String> parseGF3XML(File file) throws DocumentException {
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(file);
+        Element rootElement = document.getRootElement();
+        List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
+        HashMap<String, String> hashMap = new HashMap<>();
+        if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
         return hashMap;
     }
 
@@ -111,7 +121,27 @@ public class XmlParser {
         }
         List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
         HashMap<String, String> hashMap = new HashMap<>();
-        queryElement(queriedElement, null, entries, hashMap);
+        if(queriedElement != null) queryElement(queriedElement, null, entries, hashMap);
+        return hashMap;
+    }
+
+    public HashMap<String, String> parseGF124567XML(File file) throws DocumentException {
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(file);
+        Element rootElement = document.getRootElement();
+        String rootElementName = rootElement.getName();
+        Element queriedElement = null;
+        if(rootElementName == "GroupProductCheckData"){
+            Element productMetaDatas = rootElement.element("ProductMetaDatas");
+            queriedElement = productMetaDatas.element("ProductMetaData");
+        } else if(rootElementName == "ProductMetaDatas"){
+            queriedElement = rootElement.element("ProductMetaData");
+        } else if(rootElementName == "ProductMetaData"){
+            queriedElement = rootElement;
+        }
+        List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
+        HashMap<String, String> hashMap = new HashMap<>();
+        if(queriedElement != null) queryElement(queriedElement, null, entries, hashMap);
         return hashMap;
     }
 }
