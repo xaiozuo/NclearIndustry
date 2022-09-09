@@ -85,6 +85,37 @@ public class XmlParser {
         }
     }
 
+    public HashMap<String, String> mapFilter(HashMap<String, String> hashMap){
+        hashMap.forEach((key, value)->{
+            if(key == "imagingTime start"){
+                key = "ImagingStart";
+            } else if(key == "imagingTime end"){
+
+            } else if(key == "center latitude"){
+
+            } else if(key == "center longitude"){
+
+            } else if(key == "topLeft latitude"){
+
+            } else if(key == "topLeft longitude"){
+
+            } else if(key == "topRight latitude"){
+
+            } else if(key == "topRight longitude"){
+
+            } else if(key == "bottomLeft latitude"){
+
+            } else if(key == "bottomLeft longitude"){
+
+            } else if(key == "bottomRight latitude"){
+
+            } else if(key == "bottomRight longitude"){
+
+            }
+        });
+        return hashMap;
+    }
+
     public HashMap<String, String> parseGF3XML(String filePath) throws DocumentException {
         SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(new File(filePath));
