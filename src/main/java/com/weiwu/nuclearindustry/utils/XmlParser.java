@@ -86,34 +86,18 @@ public class XmlParser {
     }
 
     public HashMap<String, String> mapFilter(HashMap<String, String> hashMap){
+        HashMap<String, String> map = new HashMap<>();
         hashMap.forEach((key, value)->{
-            if(key == "imagingTime start"){
-                key = "ImagingStart";
-            } else if(key == "imagingTime end"){
-
-            } else if(key == "center latitude"){
-
-            } else if(key == "center longitude"){
-
-            } else if(key == "topLeft latitude"){
-
-            } else if(key == "topLeft longitude"){
-
-            } else if(key == "topRight latitude"){
-
-            } else if(key == "topRight longitude"){
-
-            } else if(key == "bottomLeft latitude"){
-
-            } else if(key == "bottomLeft longitude"){
-
-            } else if(key == "bottomRight latitude"){
-
-            } else if(key == "bottomRight longitude"){
-
+            String mKey = SystemConfig.GF3Filter.get(key);
+            if(mKey != null){
+                map.put(mKey, value);
+            } else {
+                String[] strings = key.split(" ");
+                String upperKey = NameUtil.lowerToUpperCamelCase(strings[1]);
+                map.put(strings[0] + " " + upperKey, value);
             }
         });
-        return hashMap;
+        return map;
     }
 
     public HashMap<String, String> parseGF3XML(String filePath) throws DocumentException {
@@ -123,7 +107,8 @@ public class XmlParser {
         List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
         HashMap<String, String> hashMap = new HashMap<>();
         if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
-        return hashMap;
+        HashMap<String, String> mapFilter = mapFilter(hashMap);
+        return mapFilter;
     }
 
     public HashMap<String, String> parseGF3XML(File file) throws DocumentException {
@@ -133,7 +118,8 @@ public class XmlParser {
         List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
         HashMap<String, String> hashMap = new HashMap<>();
         if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
-        return hashMap;
+        HashMap<String, String> mapFilter = mapFilter(hashMap);
+        return mapFilter;
     }
 
     public HashMap<String, String> parseGF124567XML(String filePath) throws DocumentException {

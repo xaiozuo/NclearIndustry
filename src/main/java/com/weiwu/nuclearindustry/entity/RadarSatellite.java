@@ -114,4 +114,13 @@ public class RadarSatellite {
 
     @Column(length = 64)
     private String bottomRightLongitude;
+
+    @Column(length = 64)
+    private String imageUrl;
+
+    @Column(length = 64)
+    private String thumbUrl;
+
+    @Column(length = 64)
+    private String directory;
 }

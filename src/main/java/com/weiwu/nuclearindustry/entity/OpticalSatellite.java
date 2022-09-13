@@ -268,4 +268,13 @@ public class OpticalSatellite {
     @Column(length = 64)
     private String bottomLeftLongitude;
 
+    @Column(length = 64)
+    private String imageUrl;
+
+    @Column(length = 64)
+    private String thumbUrl;
+
+    @Column(length = 64)
+    private String directory;
+
 }
