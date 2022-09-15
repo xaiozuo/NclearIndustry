@@ -45,4 +45,16 @@ public class NameUtil {
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
+    public static boolean nameEqual(String filename, String directoryName){
+        String[] fileNames = filename.split("_");
+        String[] directoryNames = directoryName.split("_");
+        StringBuilder name1 = new StringBuilder();
+        StringBuilder name2 = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            name1 = name1.append(fileNames[i]);
+            name2 = name2.append(directoryNames[i]);
+        }
+        return name1 == name2;
+    }
+
 }

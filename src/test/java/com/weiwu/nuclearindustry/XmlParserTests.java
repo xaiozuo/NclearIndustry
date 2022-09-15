@@ -23,7 +23,8 @@ public class XmlParserTests {
                 + "GF3_KAS_FSII_020743_E115.8_N28.1_20200718_L1A_HHHV_L10004935216" + File.separator
                 + "GF3_KAS_FSII_020743_E115.8_N28.1_20200718_L1A_HHHV_L10004935216.meta.xml";
         XmlParser xmlParser = new XmlParser();
-        xmlParser.parseGF3XML(filePath);
+        HashMap<String, String> hashMap = xmlParser.parseXml(new File(filePath));
+        System.out.println(hashMap);
     }
 
     @Test
@@ -36,6 +37,7 @@ public class XmlParserTests {
                 + "GF1B_PMS_E101.2_N41.3_20200709_L1A1227834890" + File.separator
                 + "GF1B_PMS_E101.2_N41.3_20200709_L1A1227834890.xml";
         XmlParser xmlParser = new XmlParser();
-        xmlParser.parseGF124567XML(filePath);
+        HashMap<String, String> hashMap = xmlParser.parseXml(new File(filePath));
+        System.out.println(hashMap);
     }
 }

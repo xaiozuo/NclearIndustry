@@ -12,6 +12,17 @@ import java.util.stream.Collectors;
 
 public class XmlParser {
 
+    private static final SAXReader saxReader = new SAXReader();
+    private Element rootElement; //root element
+    private Element resultElement; //element need to parse
+
+    public XmlParser(){}
+
+    private void makeElement(File file) throws DocumentException {
+        Document document = saxReader.read(file);
+        rootElement = document.getRootElement();
+    }
+
     /**
      * recursive traversal element
      * @param element
@@ -21,7 +32,7 @@ public class XmlParser {
         List<Element> elements = element.elements();
         result.add(element.getTextTrim());
         for (Element elm : elements) {
-            result.add(elm.getText());
+            result.add(elm.getTextTrim());
             List<Element> elms = elm.elements();
             for (Element childElm : elms) {
                 queryElement(childElm, result);
@@ -85,6 +96,20 @@ public class XmlParser {
         }
     }
 
+    private void findElement(Element rootElement, String elementName){
+        String name = rootElement.getName();
+        if(name == elementName || resultElement != null){
+            if(resultElement == null){
+                resultElement = rootElement;
+            }
+            return;
+        }
+        List<Element> elements = rootElement.elements();
+        for (Element element : elements){
+            findElement(element, elementName);
+        }
+    }
+
     public HashMap<String, String> mapFilter(HashMap<String, String> hashMap){
         HashMap<String, String> map = new HashMap<>();
         hashMap.forEach((key, value)->{
@@ -100,65 +125,21 @@ public class XmlParser {
         return map;
     }
 
-    public HashMap<String, String> parseGF3XML(String filePath) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(new File(filePath));
-        Element rootElement = document.getRootElement();
-        List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
+    public HashMap<String, String> parseXml(File file) throws DocumentException {
+        makeElement(file);
+        String fileName = file.getName();
         HashMap<String, String> hashMap = new HashMap<>();
-        if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
-        HashMap<String, String> mapFilter = mapFilter(hashMap);
-        return mapFilter;
-    }
-
-    public HashMap<String, String> parseGF3XML(File file) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(file);
-        Element rootElement = document.getRootElement();
-        List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
-        HashMap<String, String> hashMap = new HashMap<>();
-        if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
-        HashMap<String, String> mapFilter = mapFilter(hashMap);
-        return mapFilter;
-    }
-
-    public HashMap<String, String> parseGF124567XML(String filePath) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(new File(filePath));
-        Element rootElement = document.getRootElement();
-        String rootElementName = rootElement.getName();
-        Element queriedElement = null;
-        if(rootElementName == "GroupProductCheckData"){
-            Element productMetaDatas = rootElement.element("ProductMetaDatas");
-            queriedElement = productMetaDatas.element("ProductMetaData");
-        } else if(rootElementName == "ProductMetaDatas"){
-            queriedElement = rootElement.element("ProductMetaData");
-        } else if(rootElementName == "ProductMetaData"){
-            queriedElement = rootElement;
+        if(fileName.startsWith("GF3")){
+            List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
+            if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
+            hashMap = mapFilter(hashMap);
         }
-        List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
-        HashMap<String, String> hashMap = new HashMap<>();
-        if(queriedElement != null) queryElement(queriedElement, null, entries, hashMap);
-        return hashMap;
-    }
-
-    public HashMap<String, String> parseGF124567XML(File file) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(file);
-        Element rootElement = document.getRootElement();
-        String rootElementName = rootElement.getName();
-        Element queriedElement = null;
-        if(rootElementName == "GroupProductCheckData"){
-            Element productMetaDatas = rootElement.element("ProductMetaDatas");
-            queriedElement = productMetaDatas.element("ProductMetaData");
-        } else if(rootElementName == "ProductMetaDatas"){
-            queriedElement = rootElement.element("ProductMetaData");
-        } else if(rootElementName == "ProductMetaData"){
-            queriedElement = rootElement;
+        if(fileName.startsWith("GF1") || fileName.startsWith("GF2") || fileName.startsWith("GF4") ||
+                fileName.startsWith("GF5") || fileName.startsWith("GF6") || fileName.startsWith("GF7")){
+            findElement(rootElement, "ProductMetaData");
+            List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
+            if(resultElement != null) queryElement(resultElement, null, entries, hashMap);
         }
-        List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
-        HashMap<String, String> hashMap = new HashMap<>();
-        if(queriedElement != null) queryElement(queriedElement, null, entries, hashMap);
         return hashMap;
     }
 }
