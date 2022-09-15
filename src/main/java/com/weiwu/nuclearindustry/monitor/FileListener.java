@@ -56,6 +56,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
         logger.info("new file directory: " + directory.getName());
         File[] files = directory.listFiles();
         String directoryName = directory.getName();
+        if(directoryName.matches("GF[1-7]+")){
+            return;
+        }
 
         if (directoryName.startsWith("GF3")) {
             RadarSatellite radarSatellite = new RadarSatellite();
@@ -77,6 +80,17 @@ public class FileListener extends FileAlterationListenerAdaptor {
     }
 
     @SneakyThrows
+    private void objectSetFieldValue(Object object, String field, String value){
+        Class<?> aClass = object.getClass();
+        Method getField = aClass.getDeclaredMethod("get" + field);
+        Method setField = aClass.getDeclaredMethod("set" + field, String.class);
+        String val = (String) getField.invoke(object);
+        if(val == null){
+            setField.invoke(object, value);
+        }
+    }
+
+    @SneakyThrows
     private Object doJpg(File file, String directoryName, Object object) {
         String newPath = SystemConfig.IMAGE_PATH + File.separator + directoryName + File.separator + file.getName();
         File newFile = new File(newPath);
@@ -85,15 +99,23 @@ public class FileListener extends FileAlterationListenerAdaptor {
         Class<?> aClass = object.getClass();
         if(prefix.equals(directoryName) || prefix.contains(directoryName) ||
                 NameUtil.nameEqual(prefix, directoryName)){
-            if(!prefix.contains("thumb")){
+            if(!prefix.contains("thumb") && !prefix.contains("Thumb")){
+                Method getImageUrl = aClass.getDeclaredMethod("getImageUrl");
                 Method setImageUrl = aClass.getDeclaredMethod("setImageUrl", String.class);
-                setImageUrl.invoke(object, newPath);
-                FileUtils.copyFile(file, newFile);
+                String imageUrl = (String) getImageUrl.invoke(object);
+                if(imageUrl == null){
+                    setImageUrl.invoke(object, fileName);
+                    FileUtils.copyFile(file, newFile);
+                }
             }
-            if(prefix.contains("thumb")){
+            if(prefix.contains("thumb") || prefix.contains("Thumb")){
+                Method getThumbUrl = aClass.getDeclaredMethod("getThumbUrl");
                 Method setThumbUrl = aClass.getDeclaredMethod("setThumbUrl", String.class);
-                setThumbUrl.invoke(object, newPath);
-                FileUtils.copyFile(file, newFile);
+                String thumbUrl = (String) getThumbUrl.invoke(object);
+                if(thumbUrl == null){
+                    setThumbUrl.invoke(object, fileName);
+                    FileUtils.copyFile(file, newFile);
+                }
             }
         }
         return object;
