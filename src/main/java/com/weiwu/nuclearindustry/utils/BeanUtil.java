@@ -19,6 +19,8 @@ public class BeanUtil {
             Method declaredMethod = aClass.getDeclaredMethod("set" + field, String.class);
             declaredMethod.invoke(object, entry.getValue());
         }
+        Method setDone = aClass.getDeclaredMethod("setDone", Boolean.class);
+        setDone.invoke(object, true);
         return object;
     }
 

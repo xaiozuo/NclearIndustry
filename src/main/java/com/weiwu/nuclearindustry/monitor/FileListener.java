@@ -6,9 +6,13 @@ import com.weiwu.nuclearindustry.entity.RadarSatellite;
 import com.weiwu.nuclearindustry.service.OpSatService;
 import com.weiwu.nuclearindustry.service.RaSatService;
 import com.weiwu.nuclearindustry.utils.BeanUtil;
+import com.weiwu.nuclearindustry.utils.FileUtil;
 import com.weiwu.nuclearindustry.utils.NameUtil;
 import com.weiwu.nuclearindustry.utils.XmlParser;
 import lombok.SneakyThrows;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
@@ -54,29 +59,29 @@ public class FileListener extends FileAlterationListenerAdaptor {
     @Override
     public void onDirectoryCreate(File directory) {
         logger.info("new file directory: " + directory.getName());
-        File[] files = directory.listFiles();
-        String directoryName = directory.getName();
-        if(directoryName.matches("GF[1-7]+")){
-            return;
-        }
-
-        if (directoryName.startsWith("GF3")) {
-            RadarSatellite radarSatellite = new RadarSatellite();
-            radarSatellite = (RadarSatellite) doFiles(files, directoryName, radarSatellite);
-            radarSatellite.setDirectory(directoryName);
-            fileListener.raSatService.create(radarSatellite);
-        }
-        if (directoryName.startsWith("GF1") ||
-                directoryName.startsWith("GF2") ||
-                directoryName.startsWith("GF4") ||
-                directoryName.startsWith("GF5") ||
-                directoryName.startsWith("GF6") ||
-                directoryName.startsWith("GF7")) {
-            OpticalSatellite opticalSatellite = new OpticalSatellite();
-            opticalSatellite = (OpticalSatellite) doFiles(files, directoryName, opticalSatellite);
-            opticalSatellite.setDirectory(directoryName);
-            fileListener.opSatService.create(opticalSatellite);
-        }
+//        File[] files = directory.listFiles();
+//        String directoryName = directory.getName();
+//        if(directoryName.matches("GF[1-7]+")){
+//            return;
+//        }
+//
+//        if (directoryName.startsWith("GF3")) {
+//            RadarSatellite radarSatellite = new RadarSatellite();
+//            radarSatellite = (RadarSatellite) doFiles(files, directoryName, radarSatellite);
+//            radarSatellite.setDirectory(directoryName);
+//            fileListener.raSatService.create(radarSatellite);
+//        }
+//        if (directoryName.startsWith("GF1") ||
+//                directoryName.startsWith("GF2") ||
+//                directoryName.startsWith("GF4") ||
+//                directoryName.startsWith("GF5") ||
+//                directoryName.startsWith("GF6") ||
+//                directoryName.startsWith("GF7")) {
+//            OpticalSatellite opticalSatellite = new OpticalSatellite();
+//            opticalSatellite = (OpticalSatellite) doFiles(files, directoryName, opticalSatellite);
+//            opticalSatellite.setDirectory(directoryName);
+//            fileListener.opSatService.create(opticalSatellite);
+//        }
     }
 
     @SneakyThrows
@@ -121,13 +126,19 @@ public class FileListener extends FileAlterationListenerAdaptor {
         return object;
     }
 
+    /**
+     * Ability to parse multiple XML files
+     * @param file
+     * @param directoryName
+     * @param object
+     * @return
+     */
+    @SneakyThrows
     private Object doXml(File file, String directoryName, Object object) {
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
-        if (prefix.contains(directoryName)) {
-            if (fileName.startsWith("GF3") || prefix.equals(directoryName)) {
-                object = BeanUtil.build(new XmlParser(), file, object);
-            }
+        if (fileName.startsWith("GF3") || prefix.equals(directoryName) || prefix.contains(directoryName)) {
+            object = BeanUtil.build(new XmlParser(), file, object);
         }
         return object;
     }
@@ -158,9 +169,66 @@ public class FileListener extends FileAlterationListenerAdaptor {
     }
 
     @SneakyThrows
+    private Object doTarGz(File file, String prefix, Object object){
+        String fileName = file.getName();
+        if(fileName.endsWith(".tar.gz") || fileName.endsWith(".tar")){
+            TarArchiveInputStream tai = null;
+            if(fileName.endsWith(".tar.gz")){
+                GzipCompressorInputStream gci = new GzipCompressorInputStream(
+                        new FileInputStream(file), true);
+                tai = new TarArchiveInputStream(gci);
+            }
+            if(fileName.endsWith(".tar")){
+                tai = new TarArchiveInputStream(new FileInputStream(file));
+            }
+
+            TarArchiveEntry entry;
+            while((entry = tai.getNextTarEntry()) != null){
+                String entryName = entry.getName();
+                if(entry.isDirectory() || (!entryName.endsWith(".xml") && !entryName.endsWith(".jpg"))){
+                    continue;
+                }
+                if(entryName.endsWith(".xml") || entryName.endsWith(".jpg")){
+                    String filename = SystemConfig.UNTARGZ_PATH + File.separator + prefix + File.separator + entryName;
+                    File entryFile = FileUtil.getFile(tai, filename);
+                    if (entryName.endsWith("xml")) {
+                        object = doXml(entryFile, prefix, object);
+                    }
+                    if (entryName.endsWith("jpg")) {
+                        object = doJpg(entryFile, prefix, object);
+                    }
+                }
+            }
+        }
+        return object;
+    }
+
     @Override
     public void onFileCreate(File file) {
         logger.info("new file create: " + file.getName());
+        String fileName = file.getName();
+        String prefix = FileUtil.filePrefixName(fileName);
+        File directory = FileUtil.unTarGz(file);
+        if(directory != null) {
+            File[] files = directory.listFiles();
+            if (prefix.startsWith("GF3")) {
+                RadarSatellite radarSatellite = new RadarSatellite();
+                radarSatellite = (RadarSatellite) doFiles(files, prefix, radarSatellite);
+                radarSatellite.setDirectory(prefix);
+                fileListener.raSatService.create(radarSatellite);
+            }
+            if (prefix.startsWith("GF1") ||
+                    prefix.startsWith("GF2") ||
+                    prefix.startsWith("GF4") ||
+                    prefix.startsWith("GF5") ||
+                    prefix.startsWith("GF6") ||
+                    prefix.startsWith("GF7")) {
+                OpticalSatellite opticalSatellite = new OpticalSatellite();
+                opticalSatellite = (OpticalSatellite) doFiles(files, prefix, opticalSatellite);
+                opticalSatellite.setDirectory(prefix);
+                fileListener.opSatService.create(opticalSatellite);
+            }
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ public class SystemConfig {
     public static final String SOURCE_PATH = "G:" + File.separator + "sasmac" + File.separator + "data";
     public static final String IMAGE_PATH = "G:" + File.separator + "sasmac" + File.separator + "image";
 
+    public static final String UNTARGZ_PATH = "G:" + File.separator + "sasmac" + File.separator + "untargz";
     public static final String GF3[] = new String[]{
             //product
             "product",

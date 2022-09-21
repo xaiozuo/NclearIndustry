@@ -2,16 +2,12 @@ package com.weiwu.nuclearindustry;
 
 import com.weiwu.nuclearindustry.config.SystemConfig;
 import com.weiwu.nuclearindustry.utils.XmlParser;
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SpringBootTest
 public class XmlParserTests {

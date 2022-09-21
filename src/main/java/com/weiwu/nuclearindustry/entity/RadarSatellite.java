@@ -16,6 +16,8 @@ public class RadarSatellite {
     @Column(nullable = false, length = 20)
     private Long id;
 
+    private Boolean done = false;
+
     @Column(length = 128)
     private String satellite;
 

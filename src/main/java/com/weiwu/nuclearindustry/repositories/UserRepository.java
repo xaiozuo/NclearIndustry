@@ -6,4 +6,5 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Long>,
         QueryByExampleExecutor<User> {
+     public User findUserByUsername(String username);
 }

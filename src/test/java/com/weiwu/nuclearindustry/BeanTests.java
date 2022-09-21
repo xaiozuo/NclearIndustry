@@ -7,7 +7,6 @@ import com.weiwu.nuclearindustry.repositories.OpticalSatelliteRepository;
 import com.weiwu.nuclearindustry.utils.BeanUtil;
 import com.weiwu.nuclearindustry.utils.XmlParser;
 import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
