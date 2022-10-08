@@ -14,7 +14,8 @@ public class XmlParserTests {
 
     @Test
     public void testGF3() throws DocumentException {
-        String metaPath = SystemConfig.SOURCE_PATH + File.separator + "202208290059070" + File.separator + "metadata";
+        SystemConfig systemConfig = new SystemConfig();
+        String metaPath = systemConfig.getDATA_SOURCE().get(0) + File.separator + "202208290059070" + File.separator + "metadata";
         String filePath = metaPath + File.separator + "GF3" + File.separator
                 + "GF3_KAS_FSII_020743_E115.8_N28.1_20200718_L1A_HHHV_L10004935216" + File.separator
                 + "GF3_KAS_FSII_020743_E115.8_N28.1_20200718_L1A_HHHV_L10004935216.meta.xml";
@@ -25,7 +26,8 @@ public class XmlParserTests {
 
     @Test
     public void testGF124567() throws DocumentException {
-        String metaPath = SystemConfig.SOURCE_PATH + File.separator + "202208290059070" + File.separator + "metadata";
+        SystemConfig systemConfig = new SystemConfig();
+        String metaPath = systemConfig.getDATA_SOURCE().get(0) + File.separator + "202208290059070" + File.separator + "metadata";
 //        String filePath = metaPath + File.separator + "GF124567" + File.separator
 //                + "GF1_PMS1_E91.7_N27.2_20210103_L1A0005366574" + File.separator
 //                + "GF1_PMS1_E91.7_N27.2_20210103_L1A0005366574.xml";

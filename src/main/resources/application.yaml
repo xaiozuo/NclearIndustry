@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 12345678
-    url: jdbc:postgresql://127.0.0.1:5433/nuclear
+    url: jdbc:postgresql://localhost:5433/nuclear2
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,3 +11,12 @@ spring:
 
 server:
   port: 8088
+
+system:
+  images: G:/sasmac/images
+  untargz: G:/sasmac/untargz
+  datasource: G:/sasmac/data,E:/sasmac/data
+
+#  username: postgres
+#  password: postgres
+#  url: jdbc:postgresql://hexi_postgres:5440/nuclear

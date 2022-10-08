@@ -25,7 +25,7 @@ public class OpticalSatellite {
     private String sensorID;
 
     @Column(length = 128)
-    private String SensorMode;
+    private String sensorMode;
 
     @Column(length = 128)
     private String receiveStationID;
@@ -278,5 +278,11 @@ public class OpticalSatellite {
 
     @Column(length = 128)
     private String directory;
+
+    @Column(length = 20)
+    private Long tarGzSize;
+
+    @Column(length = 64)
+    private String tgLastModified;
 
 }

@@ -23,22 +23,30 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 @Component
 public class FileListener extends FileAlterationListenerAdaptor {
     private static FileListener fileListener;
     private static final XmlParser xmlParser = new XmlParser();
+    private String imagesPath;
+    private String untargzPath;
 
     @Autowired
     OpSatService opSatService;
     @Autowired
     RaSatService raSatService;
-
+    @Autowired
+    private SystemConfig systemConfig;
 
     @PostConstruct
     public void init() {
         fileListener = this;
+        fileListener.imagesPath = systemConfig.getIMAGE_PATH();
+        fileListener.untargzPath = systemConfig.getUNTARGZ_PATH();
+        System.out.println(fileListener.imagesPath + ":" + fileListener.untargzPath);
     }
 
     public static final Logger logger = Logger.getLogger(FileListener.class.getName());
@@ -97,7 +105,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
     @SneakyThrows
     private Object doJpg(File file, String directoryName, Object object) {
-        String newPath = SystemConfig.IMAGE_PATH + File.separator + directoryName + File.separator + file.getName();
+        String newPath = fileListener.imagesPath + File.separator + directoryName + File.separator + file.getName();
         File newFile = new File(newPath);
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
@@ -189,7 +197,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     continue;
                 }
                 if(entryName.endsWith(".xml") || entryName.endsWith(".jpg")){
-                    String filename = SystemConfig.UNTARGZ_PATH + File.separator + prefix + File.separator + entryName;
+                    String filename = fileListener.untargzPath + File.separator + prefix + File.separator + entryName;
                     File entryFile = FileUtil.getFile(tai, filename);
                     if (entryName.endsWith("xml")) {
                         object = doXml(entryFile, prefix, object);
@@ -207,6 +215,11 @@ public class FileListener extends FileAlterationListenerAdaptor {
     public void onFileCreate(File file) {
         logger.info("new file create: " + file.getName());
         String fileName = file.getName();
+        long tarGzSize = file.length();
+        long lastModified = file.lastModified();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(lastModified);
+        String dateStr = simpleDateFormat.format(date);
         String prefix = FileUtil.filePrefixName(fileName);
         File directory = FileUtil.unTarGz(file);
         if(directory != null) {
@@ -215,6 +228,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 RadarSatellite radarSatellite = new RadarSatellite();
                 radarSatellite = (RadarSatellite) doFiles(files, prefix, radarSatellite);
                 radarSatellite.setDirectory(prefix);
+                radarSatellite.setTarGzSize(tarGzSize);
+                radarSatellite.setTgLastModified(dateStr);
                 fileListener.raSatService.create(radarSatellite);
             }
             if (prefix.startsWith("GF1") ||
@@ -222,10 +237,13 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     prefix.startsWith("GF4") ||
                     prefix.startsWith("GF5") ||
                     prefix.startsWith("GF6") ||
-                    prefix.startsWith("GF7")) {
+                    prefix.startsWith("GF7") ||
+                    prefix.startsWith("ZY")) {
                 OpticalSatellite opticalSatellite = new OpticalSatellite();
                 opticalSatellite = (OpticalSatellite) doFiles(files, prefix, opticalSatellite);
                 opticalSatellite.setDirectory(prefix);
+                opticalSatellite.setTarGzSize(tarGzSize);
+                opticalSatellite.setTgLastModified(dateStr);
                 fileListener.opSatService.create(opticalSatellite);
             }
         }

@@ -4,16 +4,14 @@ import com.weiwu.nuclearindustry.entity.OpticalSatellite;
 import com.weiwu.nuclearindustry.entity.User;
 import com.weiwu.nuclearindustry.repositories.OpticalSatelliteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @ResponseBody
 @RequestMapping(value = "/optical_satellite")
+@CrossOrigin(origins="*",maxAge=3600)
 public class OpSatController {
 
     @Autowired
@@ -25,19 +23,19 @@ public class OpSatController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public List<OpticalSatellite> save(OpticalSatellite entity){
+    public List<OpticalSatellite> save(@RequestBody OpticalSatellite entity){
         opticalSatelliteRepository.save(entity);
         return (List<OpticalSatellite>) opticalSatelliteRepository.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public List<OpticalSatellite> delete(Long id){
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public List<OpticalSatellite> delete(@PathVariable Long id){
         opticalSatelliteRepository.deleteById(id);
         return (List<OpticalSatellite>) opticalSatelliteRepository.findAll();
     }
 
     @RequestMapping(method = RequestMethod.PATCH)
-    public List<OpticalSatellite> update(OpticalSatellite entity){
+    public List<OpticalSatellite> update(@RequestBody OpticalSatellite entity){
         opticalSatelliteRepository.save(entity);
         return (List<OpticalSatellite>) opticalSatelliteRepository.findAll();
     }

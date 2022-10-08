@@ -50,7 +50,7 @@ public class NameUtil {
         String[] directoryNames = directoryName.split("_");
         StringBuilder name1 = new StringBuilder();
         StringBuilder name2 = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             name1 = name1.append(fileNames[i]);
             name2 = name2.append(directoryNames[i]);
         }

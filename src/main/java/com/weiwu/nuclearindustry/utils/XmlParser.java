@@ -135,7 +135,8 @@ public class XmlParser {
             hashMap = mapFilter(hashMap);
         }
         if(fileName.startsWith("GF1") || fileName.startsWith("GF2") || fileName.startsWith("GF4") ||
-                fileName.startsWith("GF5") || fileName.startsWith("GF6") || fileName.startsWith("GF7")){
+                fileName.startsWith("GF5") || fileName.startsWith("GF6") || fileName.startsWith("GF7") ||
+                fileName.startsWith("ZY") || fileName.startsWith("zy")){
             findElement(rootElement, "ProductMetaData");
             List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
             if(resultElement != null) queryElement(resultElement, null, entries, hashMap);

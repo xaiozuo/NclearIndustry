@@ -5,11 +5,17 @@ import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
 
+@Component
 public class FileUtil {
+
+    @Autowired
+    private static SystemConfig systemConfig;
 
     public static String filePrefixName(String filename){
         StringBuilder prefix = new StringBuilder();
@@ -29,11 +35,11 @@ public class FileUtil {
     }
 
     public static String getBaseDirectory(String prefix){
-        return SystemConfig.UNTARGZ_PATH + File.separator + prefix;
+        return systemConfig.getUNTARGZ_PATH() + File.separator + prefix;
     }
 
     public static String getFilePath(String prefix, String filename){
-        return SystemConfig.UNTARGZ_PATH + File.separator + prefix + File.separator + filename;
+        return systemConfig.getUNTARGZ_PATH() + File.separator + prefix + File.separator + filename;
     }
 
     @SneakyThrows

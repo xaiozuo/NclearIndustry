@@ -125,4 +125,10 @@ public class RadarSatellite {
 
     @Column(length = 128)
     private String directory;
+
+    @Column(length = 20)
+    private Long tarGzSize;
+
+    @Column(length = 64)
+    private String tgLastModified;
 }

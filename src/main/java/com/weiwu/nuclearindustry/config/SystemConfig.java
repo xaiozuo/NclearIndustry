@@ -1,17 +1,26 @@
 package com.weiwu.nuclearindustry.config;
 
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
+@Configuration
+@Data
 public class SystemConfig {
-    public static final String SOURCE_PATH = "G:" + File.separator + "sasmac" + File.separator + "data";
-    public static final String IMAGE_PATH = "G:" + File.separator + "sasmac" + File.separator + "image";
+    @Value("${system.datasource}")
+    private String[] DATA_SOURCE;
+    @Value("${system.images}")
+    private String IMAGE_PATH;
+    @Value("${system.untargz}")
+    private String UNTARGZ_PATH;
 
-    public static final String UNTARGZ_PATH = "G:" + File.separator + "sasmac" + File.separator + "untargz";
     public static final String GF3[] = new String[]{
             //product
             "product",
@@ -35,6 +44,7 @@ public class SystemConfig {
     };
 
     public static final Map<String, String> GF3Filter;
+
     static {
         GF3Filter = new HashMap<>();
         GF3Filter.put("imagingTime start", "imagingTime ImagingStart");

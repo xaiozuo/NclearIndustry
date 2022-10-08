@@ -3,10 +3,7 @@ package com.weiwu.nuclearindustry.controller;
 import com.weiwu.nuclearindustry.entity.User;
 import com.weiwu.nuclearindustry.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +13,7 @@ import java.util.List;
 @RestController
 @ResponseBody
 @RequestMapping(value = "/user")
+@CrossOrigin(origins="*",maxAge=3600)
 public class UserController {
 
     @Autowired
@@ -31,19 +29,19 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public List<User> save(User entity){
+    public List<User> save(@RequestBody User entity){
         userRepository.save(entity);
         return (List<User>) userRepository.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public List<User> delete(Long id){
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public List<User> delete(@PathVariable Long id){
         userRepository.deleteById(id);
         return (List<User>) userRepository.findAll();
     }
 
     @RequestMapping(method = RequestMethod.PATCH)
-    public List<User> update(User entity){
+    public List<User> update(@RequestBody User entity){
         userRepository.save(entity);
         return (List<User>) userRepository.findAll();
     }
