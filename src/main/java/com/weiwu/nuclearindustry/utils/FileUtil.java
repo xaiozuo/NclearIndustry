@@ -5,17 +5,13 @@ import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
 
-@Component
 public class FileUtil {
 
-    @Autowired
-    private static SystemConfig systemConfig;
+    private static SystemConfig systemConfig = new SystemConfig();
 
     public static String filePrefixName(String filename){
         StringBuilder prefix = new StringBuilder();

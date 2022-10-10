@@ -46,7 +46,6 @@ public class FileListener extends FileAlterationListenerAdaptor {
         fileListener = this;
         fileListener.imagesPath = systemConfig.getIMAGE_PATH();
         fileListener.untargzPath = systemConfig.getUNTARGZ_PATH();
-        System.out.println(fileListener.imagesPath + ":" + fileListener.untargzPath);
     }
 
     public static final Logger logger = Logger.getLogger(FileListener.class.getName());

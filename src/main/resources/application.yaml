@@ -15,7 +15,7 @@ server:
 system:
   images: G:/sasmac/images
   untargz: G:/sasmac/untargz
-  datasource: G:/sasmac/data,E:/sasmac/data
+  datasource: G:/sasmac/data,E:/sasmac/data,G:/data
 
 #  username: postgres
 #  password: postgres
