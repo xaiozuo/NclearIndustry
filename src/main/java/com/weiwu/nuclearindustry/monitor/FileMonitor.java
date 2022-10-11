@@ -10,18 +10,22 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 @Component
 public class FileMonitor {
+
+    private static final Logger logger = Logger.getLogger(FileMonitor.class.getName());
 
     @Autowired
     private SystemConfig systemConfig;
 
     @PostConstruct
-    public void init(){
+    private void init(){
         int time = 60;
         long interval = TimeUnit.SECONDS.toMillis(time);
 
+        logger.info("init file monitor...");
         ArrayList<FileAlterationObserver> observers = new ArrayList<>();
         String[] dataSource = systemConfig.getDATA_SOURCE();
         for (int i = 0; i < dataSource.length; i++) {
@@ -34,6 +38,7 @@ public class FileMonitor {
         FileAlterationMonitor monitor = new FileAlterationMonitor(interval, observers);
 
         try {
+            logger.info("start file monitor");
             monitor.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
