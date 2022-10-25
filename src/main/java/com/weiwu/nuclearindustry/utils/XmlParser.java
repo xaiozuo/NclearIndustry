@@ -110,10 +110,10 @@ public class XmlParser {
         }
     }
 
-    public HashMap<String, String> mapFilter(HashMap<String, String> hashMap){
+    public HashMap<String, String> mapFilter(HashMap<String, String> hashMap, Map<String, String> filter){
         HashMap<String, String> map = new HashMap<>();
         hashMap.forEach((key, value)->{
-            String mKey = SystemConfig.GF3Filter.get(key);
+            String mKey = filter.get(key);
             if(mKey != null){
                 map.put(mKey, value);
             } else {
@@ -132,11 +132,16 @@ public class XmlParser {
         if(fileName.startsWith("GF3")){
             List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
             if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
-            hashMap = mapFilter(hashMap);
+            hashMap = mapFilter(hashMap, SystemConfig.GF3Filter);
+        }
+        if(fileName.startsWith("zy")){
+            List<String> entries = Arrays.stream(SystemConfig.ZY).collect(Collectors.toList());
+            if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
+            hashMap = mapFilter(hashMap, SystemConfig.ZYFilter);
         }
         if(fileName.startsWith("GF1") || fileName.startsWith("GF2") || fileName.startsWith("GF4") ||
                 fileName.startsWith("GF5") || fileName.startsWith("GF6") || fileName.startsWith("GF7") ||
-                fileName.startsWith("ZY") || fileName.startsWith("zy")){
+                fileName.startsWith("ZY")){
             findElement(rootElement, "ProductMetaData");
             List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
             if(resultElement != null) queryElement(resultElement, null, entries, hashMap);

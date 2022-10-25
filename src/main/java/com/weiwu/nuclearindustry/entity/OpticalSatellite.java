@@ -49,6 +49,9 @@ public class OpticalSatellite {
     private String attType;
 
     @Column(length = 128)
+    private String attitudeType;
+
+    @Column(length = 128)
     private String stripID;
 
     @Column(length = 128)
@@ -235,6 +238,9 @@ public class OpticalSatellite {
     private String mtfCorrection;
 
     @Column(length = 128)
+    private String mtfCompensation;
+
+    @Column(length = 128)
     private String denoise;
 
     @Column(length = 128)
@@ -269,6 +275,18 @@ public class OpticalSatellite {
 
     @Column(length = 128)
     private String bottomLeftLongitude;
+
+    @Column(length = 128)
+    private String qualityInfo;
+
+    @Column(length = 128)
+    private String relativeCorrectionData;
+
+    @Column(length = 128)
+    private String usedGCPNo;
+
+    @Column(length = 128)
+    private String validPixelBits;
 
     @Column(length = 128)
     private String imageUrl;

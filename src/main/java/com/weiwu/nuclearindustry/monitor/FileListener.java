@@ -144,7 +144,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
     private Object doXml(File file, String directoryName, Object object) {
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
-        if (fileName.startsWith("GF3") || prefix.equals(directoryName) || prefix.contains(directoryName)) {
+        if (fileName.startsWith("GF3") || fileName.startsWith("ZY") ||
+                prefix.equals(directoryName) || prefix.contains(directoryName)) {
             object = BeanUtil.build(new XmlParser(), file, object);
         }
         return object;
@@ -220,7 +221,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         Date date = new Date(lastModified);
         String dateStr = simpleDateFormat.format(date);
         String prefix = FileUtil.filePrefixName(fileName);
-        File directory = FileUtil.unTarGz(file);
+        File directory = FileUtil.unTarGz(fileListener.untargzPath, file);
         if(directory != null) {
             File[] files = directory.listFiles();
             if (prefix.startsWith("GF3")) {
@@ -237,7 +238,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     prefix.startsWith("GF5") ||
                     prefix.startsWith("GF6") ||
                     prefix.startsWith("GF7") ||
-                    prefix.startsWith("ZY")) {
+                    prefix.startsWith("ZY") ||
+                    prefix.startsWith("zy") ) {
                 OpticalSatellite opticalSatellite = new OpticalSatellite();
                 opticalSatellite = (OpticalSatellite) doFiles(files, prefix, opticalSatellite);
                 opticalSatellite.setDirectory(prefix);

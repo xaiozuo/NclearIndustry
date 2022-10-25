@@ -57,6 +57,40 @@ public class SystemConfig {
         GF3Filter.put("bottomRight longitude", "bottomRight BottomRightLongitude");
     }
 
+    public static final String ZY[] = new String[]{
+            "sensor_corrected_metadata", //entry
+            "productInfo",
+            "ProductLevel", "SatelliteID", "ReceiveStationID", "SensorID", "OrbitID", "SceneID", "ScenePath",
+            "OrbitType", "AttitudeType", "SunAltitude", "SunAzimuth", "SatAzimuth", "SatAltitude",
+            "RollViewingAngle", "PitchViewingAngle", "RollSatelliteAngle", "PitchSatelliteAngle",
+            "TimeStamp", "StartTime", "EndTime", "CenterTime", "ImageGSD", "Line", "Sample", "WidthInMeters",
+            "HeightInMeters", "RegionName", "CloudPercent", "ProductQuality", "Bands", "FUSMethod",
+            "ProductGeographicRange", "CenterPoint", "LeftTopPoint", "RightTopPoint", "RightBottomPoint",
+            "LeftBottomPoint", "Longtitude", "Latitude", "Altitude",
+            "processInfo",
+            "ProductTime", "ProduceID", "DataSource", "ProduceType", "CalibrationInfo", "Geometric", "Radiometric",
+            "RadiometricMethod", "MtfCompensation", "Denoise", "RayleighCorrection", "GeometryMethod",
+            "HeightMode", "DEMAverage", "DEMPrecision", "ResamplingKernel"
+    };
+
+    public static final Map<String, String> ZYFilter;
+
+    static {
+        ZYFilter = new HashMap<>();
+        ZYFilter.put("CenterPoint Latitude", "CenterPoint CenterLatitude");
+        ZYFilter.put("CenterPoint Longtitude", "CenterPoint CenterLongitude");
+        ZYFilter.put("LeftTopPoint Latitude", "LeftTopPoint TopLeftLatitude");
+        ZYFilter.put("LeftTopPoint Longtitude", "LeftTopPoint TopLeftLongitude");
+        ZYFilter.put("RightTopPoint Latitude", "RightTopPoint TopRightLatitude");
+        ZYFilter.put("RightTopPoint Longtitude", "RightTopPoint TopRightLongitude");
+        ZYFilter.put("LeftBottomPoint Latitude", "LeftBottomPoint BottomLeftLatitude");
+        ZYFilter.put("LeftBottomPoint Longtitude", "LeftBottomPoint BottomLeftLongitude");
+        ZYFilter.put("RightBottomPoint Latitude", "RightBottomPoint BottomRightLatitude");
+        ZYFilter.put("RightBottomPoint Longtitude", "RightBottomPoint BottomRightLongitude");
+        ZYFilter.put("ImageGSD Line", "ImageGSD ImageGSDLine");
+        ZYFilter.put("ImageGSD Sample", "ImageGSD ImageGSDSample");
+    }
+
     public static final String GF124567[] = new String[]{
             "ProductMetaData", //entry
             "SatelliteID", "SensorID", "SensorMode", "ReceiveStationID", "ReceiveTime", "ProduceTime", "OrbitID",

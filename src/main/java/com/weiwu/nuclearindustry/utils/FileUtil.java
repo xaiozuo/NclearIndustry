@@ -5,13 +5,14 @@ import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
 
-public class FileUtil {
 
-    private static SystemConfig systemConfig = new SystemConfig();
+public class FileUtil {
 
     public static String filePrefixName(String filename){
         StringBuilder prefix = new StringBuilder();
@@ -30,16 +31,16 @@ public class FileUtil {
         return filename;
     }
 
-    public static String getBaseDirectory(String prefix){
-        return systemConfig.getUNTARGZ_PATH() + File.separator + prefix;
+    public static String getBaseDirectory(String unTarGzPath, String prefix){
+        return unTarGzPath + File.separator + prefix;
     }
 
-    public static String getFilePath(String prefix, String filename){
-        return systemConfig.getUNTARGZ_PATH() + File.separator + prefix + File.separator + filename;
+    public static String getFilePath(String unTarGzPath, String prefix, String filename){
+        return unTarGzPath + File.separator + prefix + File.separator + filename;
     }
 
     @SneakyThrows
-    public static File unTarGz(File file){
+    public static File unTarGz(String unTarGzPath, File file){
         String fileName = file.getName();
         String prefix = filePrefixName(fileName);
         File directory = null;
@@ -62,7 +63,7 @@ public class FileUtil {
                     continue;
                 }
                 if(entryName.endsWith(".xml") || entryName.endsWith(".jpg")){
-                    String entryFilename = getFilePath(prefix, entryName);
+                    String entryFilename = getFilePath(unTarGzPath, prefix, entryName);
                     File entryFile = new File(entryFilename);
                     if(!entryFile.getParentFile().exists()){
                         entryFile.getParentFile().mkdirs();
