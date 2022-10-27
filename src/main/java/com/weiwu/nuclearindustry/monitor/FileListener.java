@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -103,8 +104,8 @@ public class FileListener extends FileAlterationListenerAdaptor {
     }
 
     @SneakyThrows
-    private Object doJpg(File file, String directoryName, Object object) {
-        String newPath = fileListener.imagesPath + File.separator + directoryName + File.separator + file.getName();
+    private void doJpg(String imagesPath, File file, String directoryName, Object object) {
+        String newPath = imagesPath + File.separator + directoryName + File.separator + file.getName();
         File newFile = new File(newPath);
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
@@ -130,25 +131,23 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 }
             }
         }
-        return object;
     }
 
     /**
      * Ability to parse multiple XML files
+     *
      * @param file
      * @param directoryName
      * @param object
-     * @return
      */
     @SneakyThrows
-    private Object doXml(File file, String directoryName, Object object) {
+    private void doXml(File file, String directoryName, Object object) {
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
         if (fileName.startsWith("GF3") || fileName.startsWith("ZY") ||
                 prefix.equals(directoryName) || prefix.contains(directoryName)) {
-            object = BeanUtil.build(new XmlParser(), file, object);
+            BeanUtil.build(new XmlParser(), file, object);
         }
-        return object;
     }
 
     private Object doFiles(File[] files, String directoryName, Object object) {
@@ -156,10 +155,10 @@ public class FileListener extends FileAlterationListenerAdaptor {
             String fileName = file.getName();
             if (fileName.endsWith("jpg") || fileName.endsWith("xml")) {
                 if (fileName.endsWith("xml")) {
-                    object = doXml(file, directoryName, object);
+                    doXml(file, directoryName, object);
                 }
                 if (fileName.endsWith("jpg")) {
-                    object = doJpg(file, directoryName, object);
+                    doJpg(fileListener.imagesPath, file, directoryName, object);
                 }
             }
         }
@@ -183,11 +182,11 @@ public class FileListener extends FileAlterationListenerAdaptor {
             TarArchiveInputStream tai = null;
             if(fileName.endsWith(".tar.gz")){
                 GzipCompressorInputStream gci = new GzipCompressorInputStream(
-                        new FileInputStream(file), true);
+                        Files.newInputStream(file.toPath()), true);
                 tai = new TarArchiveInputStream(gci);
             }
             if(fileName.endsWith(".tar")){
-                tai = new TarArchiveInputStream(new FileInputStream(file));
+                tai = new TarArchiveInputStream(Files.newInputStream(file.toPath()));
             }
 
             TarArchiveEntry entry;
@@ -200,10 +199,10 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     String filename = fileListener.untargzPath + File.separator + prefix + File.separator + entryName;
                     File entryFile = FileUtil.getFile(tai, filename);
                     if (entryName.endsWith("xml")) {
-                        object = doXml(entryFile, prefix, object);
+                        doXml(entryFile, prefix, object);
                     }
                     if (entryName.endsWith("jpg")) {
-                        object = doJpg(entryFile, prefix, object);
+                        doJpg(fileListener.imagesPath, entryFile, prefix, object);
                     }
                 }
             }
@@ -226,7 +225,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
             File[] files = directory.listFiles();
             if (prefix.startsWith("GF3")) {
                 RadarSatellite radarSatellite = new RadarSatellite();
-                radarSatellite = (RadarSatellite) doFiles(files, prefix, radarSatellite);
+                assert files != null;
+                FileUtil.doFiles(fileListener.imagesPath,
+                        files, prefix, radarSatellite);
                 radarSatellite.setDirectory(prefix);
                 radarSatellite.setTarGzSize(tarGzSize);
                 radarSatellite.setTgLastModified(dateStr);
@@ -241,7 +242,9 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     prefix.startsWith("ZY") ||
                     prefix.startsWith("zy") ) {
                 OpticalSatellite opticalSatellite = new OpticalSatellite();
-                opticalSatellite = (OpticalSatellite) doFiles(files, prefix, opticalSatellite);
+                assert files != null;
+                FileUtil.doFiles(fileListener.imagesPath,
+                        files, prefix, opticalSatellite);
                 opticalSatellite.setDirectory(prefix);
                 opticalSatellite.setTarGzSize(tarGzSize);
                 opticalSatellite.setTgLastModified(dateStr);

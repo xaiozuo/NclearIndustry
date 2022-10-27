@@ -28,8 +28,7 @@ public class FileMonitor {
         logger.info("init file monitor...");
         ArrayList<FileAlterationObserver> observers = new ArrayList<>();
         String[] dataSource = systemConfig.getDATA_SOURCE();
-        for (int i = 0; i < dataSource.length; i++) {
-            String path = dataSource[i];
+        for (String path : dataSource) {
             FileAlterationObserver observer = new FileAlterationObserver(path);
             observer.addListener(new FileListener());
             observers.add(observer);

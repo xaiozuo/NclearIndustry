@@ -1,14 +1,13 @@
 package com.weiwu.nuclearindustry.utils;
 
-import com.weiwu.nuclearindustry.config.SystemConfig;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 
 
@@ -37,6 +36,67 @@ public class FileUtil {
 
     public static String getFilePath(String unTarGzPath, String prefix, String filename){
         return unTarGzPath + File.separator + prefix + File.separator + filename;
+    }
+
+    @SneakyThrows
+    public static void doJpg(String imagesPath, File file, String directoryName, Object object) {
+        String newPath = imagesPath + File.separator + directoryName + File.separator + file.getName();
+        File newFile = new File(newPath);
+        String fileName = file.getName();
+        String prefix = fileName.substring(0, fileName.lastIndexOf("."));
+        Class<?> aClass = object.getClass();
+        if(prefix.equals(directoryName) || prefix.contains(directoryName) ||
+                NameUtil.nameEqual(prefix, directoryName)){
+            if(!prefix.contains("thumb") && !prefix.contains("Thumb")){
+                Method getImageUrl = aClass.getDeclaredMethod("getImageUrl");
+                Method setImageUrl = aClass.getDeclaredMethod("setImageUrl", String.class);
+                String imageUrl = (String) getImageUrl.invoke(object);
+                if(imageUrl == null){
+                    setImageUrl.invoke(object, fileName);
+                    FileUtils.copyFile(file, newFile);
+                }
+            }
+            if(prefix.contains("thumb") || prefix.contains("Thumb")){
+                Method getThumbUrl = aClass.getDeclaredMethod("getThumbUrl");
+                Method setThumbUrl = aClass.getDeclaredMethod("setThumbUrl", String.class);
+                String thumbUrl = (String) getThumbUrl.invoke(object);
+                if(thumbUrl == null){
+                    setThumbUrl.invoke(object, fileName);
+                    FileUtils.copyFile(file, newFile);
+                }
+            }
+        }
+    }
+
+    /**
+     * Ability to parse multiple XML files
+     *
+     * @param file
+     * @param directoryName
+     * @param object
+     */
+    @SneakyThrows
+    public static void doXml(File file, String directoryName, Object object) {
+        String fileName = file.getName();
+        String prefix = fileName.substring(0, fileName.lastIndexOf("."));
+        if (fileName.startsWith("GF3") || fileName.startsWith("ZY") ||
+                prefix.equals(directoryName) || prefix.contains(directoryName)) {
+            BeanUtil.build(new XmlParser(), file, object);
+        }
+    }
+
+    public static void doFiles(String imagesPath, File[] files, String directoryName, Object object)  {
+        for (File file : files) {
+            String fileName = file.getName();
+            if (fileName.endsWith("jpg") || fileName.endsWith("xml")) {
+                if (fileName.endsWith("xml")) {
+                    doXml(file, directoryName, object);
+                }
+                if (fileName.endsWith("jpg")) {
+                    doJpg(imagesPath, file, directoryName, object);
+                }
+            }
+        }
     }
 
     @SneakyThrows

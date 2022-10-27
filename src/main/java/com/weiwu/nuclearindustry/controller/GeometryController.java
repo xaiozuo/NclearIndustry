@@ -1,6 +1,5 @@
 package com.weiwu.nuclearindustry.controller;
 
-import com.weiwu.nuclearindustry.entity.WorldBoundary;
 import com.weiwu.nuclearindustry.repositories.WorldBoundaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
