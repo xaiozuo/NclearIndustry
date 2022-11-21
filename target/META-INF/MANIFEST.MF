@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: NuclearIndustry
+Implementation-Version: 0.0.2-SNAPSHOT
+Built-By: hexi
+Implementation-Vendor-Id: com.weiwu
+Created-By: IntelliJ IDEA
+Build-Jdk: Oracle OpenJDK version 1.8.0_311
+Main-Class: ${start-class}
+
