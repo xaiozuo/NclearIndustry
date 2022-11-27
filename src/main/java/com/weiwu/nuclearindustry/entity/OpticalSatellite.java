@@ -303,4 +303,102 @@ public class OpticalSatellite {
     @Column(length = 64)
     private String tgLastModified;
 
+    @Column(columnDefinition = "text")
+    private String originPath;
+
+    @Override
+    public String toString() {
+        return "OpticalSatellite{" +
+                "satelliteID='" + satelliteID + '\'' +
+                ", sensorID='" + sensorID + '\'' +
+                ", sensorMode='" + sensorMode + '\'' +
+                ", receiveStationID='" + receiveStationID + '\'' +
+                ", receiveTime='" + receiveTime + '\'' +
+                ", produceTime='" + produceTime + '\'' +
+                ", orbitID='" + orbitID + '\'' +
+                ", pOrbitID='" + pOrbitID + '\'' +
+                ", orbitType='" + orbitType + '\'' +
+                ", attType='" + attType + '\'' +
+                ", attitudeType='" + attitudeType + '\'' +
+                ", stripID='" + stripID + '\'' +
+                ", produceType='" + produceType + '\'' +
+                ", sceneID='" + sceneID + '\'' +
+                ", productID='" + productID + '\'' +
+                ", productLevel='" + productLevel + '\'' +
+                ", productQuality='" + productQuality + '\'' +
+                ", productFormat='" + productFormat + '\'' +
+                ", bands='" + bands + '\'' +
+                ", bandsCount='" + bandsCount + '\'' +
+                ", bandsID='" + bandsID + '\'' +
+                ", spectralRangeStart='" + spectralRangeStart + '\'' +
+                ", spectralRangeEnd='" + spectralRangeEnd + '\'' +
+                ", centralWaveLength='" + centralWaveLength + '\'' +
+                ", scenePath='" + scenePath + '\'' +
+                ", sceneRow='" + sceneRow + '\'' +
+                ", satPath='" + satPath + '\'' +
+                ", satRow='" + satRow + '\'' +
+                ", sceneCount='" + sceneCount + '\'' +
+                ", sceneShift='" + sceneShift + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", centerTime='" + centerTime + '\'' +
+                ", pixelByte='" + pixelByte + '\'' +
+                ", imageGSDLine='" + imageGSDLine + '\'' +
+                ", imageGSDSample='" + imageGSDSample + '\'' +
+                ", imageGSD='" + imageGSD + '\'' +
+                ", widthInMeters='" + widthInMeters + '\'' +
+                ", heightInMeters='" + heightInMeters + '\'' +
+                ", cloudPercent='" + cloudPercent + '\'' +
+                ", snowPercent='" + snowPercent + '\'' +
+                ", dataSize='" + dataSize + '\'' +
+                ", rollViewingAngle='" + rollViewingAngle + '\'' +
+                ", pitchViewingAngle='" + pitchViewingAngle + '\'' +
+                ", rollSatelliteAngle='" + rollSatelliteAngle + '\'' +
+                ", pitchSatelliteAngle='" + pitchSatelliteAngle + '\'' +
+                ", yawSatelliteAngle='" + yawSatelliteAngle + '\'' +
+                ", solarAzimuth='" + solarAzimuth + '\'' +
+                ", sunAzimuth='" + sunAzimuth + '\'' +
+                ", solarZenith='" + solarZenith + '\'' +
+                ", satelliteAzimuth='" + satelliteAzimuth + '\'' +
+                ", satAzimuth='" + satAzimuth + '\'' +
+                ", satelliteZenith='" + satelliteZenith + '\'' +
+                ", gainMode='" + gainMode + '\'' +
+                ", gain='" + gain + '\'' +
+                ", GAINS='" + GAINS + '\'' +
+                ", OFFSETS='" + OFFSETS + '\'' +
+                ", bias='" + bias + '\'' +
+                ", integrationTime='" + integrationTime + '\'' +
+                ", integrationLevel='" + integrationLevel + '\'' +
+                ", mapProjection='" + mapProjection + '\'' +
+                ", earthEllipsoid='" + earthEllipsoid + '\'' +
+                ", zoneNo='" + zoneNo + '\'' +
+                ", resamplingKernel='" + resamplingKernel + '\'' +
+                ", heightMode='" + heightMode + '\'' +
+                ", ephemerisData='" + ephemerisData + '\'' +
+                ", attitudeData='" + attitudeData + '\'' +
+                ", radiometricMethod='" + radiometricMethod + '\'' +
+                ", calParameterVersion='" + calParameterVersion + '\'' +
+                ", calibrationParam='" + calibrationParam + '\'' +
+                ", calibrationParamVersion='" + calibrationParamVersion + '\'' +
+                ", scaleFactors='" + scaleFactors + '\'' +
+                ", mtfCorrection='" + mtfCorrection + '\'' +
+                ", mtfCompensation='" + mtfCompensation + '\'' +
+                ", denoise='" + denoise + '\'' +
+                ", rayleighCorrection='" + rayleighCorrection + '\'' +
+                ", centerLatitude='" + centerLatitude + '\'' +
+                ", centerLongitude='" + centerLongitude + '\'' +
+                ", topLeftLatitude='" + topLeftLatitude + '\'' +
+                ", topLeftLongitude='" + topLeftLongitude + '\'' +
+                ", topRightLatitude='" + topRightLatitude + '\'' +
+                ", topRightLongitude='" + topRightLongitude + '\'' +
+                ", bottomRightLatitude='" + bottomRightLatitude + '\'' +
+                ", bottomRightLongitude='" + bottomRightLongitude + '\'' +
+                ", bottomLeftLatitude='" + bottomLeftLatitude + '\'' +
+                ", bottomLeftLongitude='" + bottomLeftLongitude + '\'' +
+                ", qualityInfo='" + qualityInfo + '\'' +
+                ", relativeCorrectionData='" + relativeCorrectionData + '\'' +
+                ", usedGCPNo='" + usedGCPNo + '\'' +
+                ", validPixelBits='" + validPixelBits + '\'' +
+                '}';
+    }
 }

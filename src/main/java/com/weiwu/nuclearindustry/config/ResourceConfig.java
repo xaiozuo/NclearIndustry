@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.io.File;
 
 @Configuration
-public class ImageResourceConfig extends WebMvcConfigurerAdapter {
+public class ResourceConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private SystemConfig systemConfig;
@@ -17,5 +17,11 @@ public class ImageResourceConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/files/**")
                 .addResourceLocations("file:" + systemConfig.getFILE_PATH() + File.separator);
+        String[] dataSource = systemConfig.getDATA_SOURCE();
+        for(String source : dataSource){
+            String handler = "/source" + source.charAt(0) + "/**";
+            registry.addResourceHandler(handler)
+                    .addResourceLocations("file:" + source + File.separator);
+        }
     }
 }

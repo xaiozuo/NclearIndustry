@@ -15,7 +15,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResultUtil login(LoginParam loginParam) {
-        User user = userRepository.findUserByUsername(loginParam.getUsername());
+        User user = userRepository.findUserByPhoneNumber(loginParam.getPhoneNumber());
         if(user != null && user.getPassword().equals(loginParam.getPassword())){
             return ResultUtil.success("login success", user);
         }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -22,7 +21,7 @@ public class FileMonitor {
 
     @PostConstruct
     private void init(){
-        int time = 60;
+        int time = 1;
         long interval = TimeUnit.SECONDS.toMillis(time);
 
         logger.info("init file monitor...");

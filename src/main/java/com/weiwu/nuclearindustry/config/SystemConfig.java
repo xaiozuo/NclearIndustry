@@ -12,8 +12,8 @@ import java.util.Map;
 public class SystemConfig {
     @Value("${system.datasource}")
     private String[] DATA_SOURCE;
-    @Value("${system.images}")
-    private String IMAGE_PATH;
+    @Value("${system.files}")
+    private String FILE_PATH;
     @Value("${system.untargz}")
     private String UNTARGZ_PATH;
 

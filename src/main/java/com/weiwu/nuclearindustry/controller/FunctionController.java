@@ -3,6 +3,7 @@ package com.weiwu.nuclearindustry.controller;
 import com.weiwu.nuclearindustry.config.SystemConfig;
 import com.weiwu.nuclearindustry.entity.OpticalSatellite;
 import com.weiwu.nuclearindustry.entity.RadarSatellite;
+import com.weiwu.nuclearindustry.monitor.FileMonitor;
 import com.weiwu.nuclearindustry.service.OpSatService;
 import com.weiwu.nuclearindustry.service.RaSatService;
 import com.weiwu.nuclearindustry.utils.FileUtil;
@@ -15,11 +16,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping(value = "/function")
 public class FunctionController {
-
+    private static final Logger logger = Logger.getLogger(FunctionController.class.getName());
     @Autowired
     private OpSatService opSatService;
     @Autowired
@@ -56,6 +58,7 @@ public class FunctionController {
 
     private void doTarGz(File file){
         String fileName = file.getName();
+        String absolutePath = file.getAbsolutePath();
         long tarGzSize = file.length();
         long lastModified = file.lastModified();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -68,12 +71,13 @@ public class FunctionController {
             if (prefix.startsWith("GF3")) {
                 RadarSatellite radarSatellite = new RadarSatellite();
                 assert files != null;
-                FileUtil.doFiles(systemConfig.getIMAGE_PATH(),
-                        files, prefix, radarSatellite);
+                FileUtil.doFiles(systemConfig.getFILE_PATH(), files, prefix, radarSatellite);
                 radarSatellite.setDirectory(prefix);
                 radarSatellite.setTarGzSize(tarGzSize);
                 radarSatellite.setTgLastModified(dateStr);
+                radarSatellite.setOriginPath(absolutePath);
                 raSatService.create(radarSatellite);
+                logger.info("radar satellite create: " + radarSatellite.toString());
             }
             if (prefix.startsWith("GF1") ||
                     prefix.startsWith("GF2") ||
@@ -85,12 +89,13 @@ public class FunctionController {
                     prefix.startsWith("zy") ) {
                 OpticalSatellite opticalSatellite = new OpticalSatellite();
                 assert files != null;
-                FileUtil.doFiles(systemConfig.getIMAGE_PATH(),
-                        files, prefix, opticalSatellite);
+                FileUtil.doFiles(systemConfig.getFILE_PATH(), files, prefix, opticalSatellite);
                 opticalSatellite.setDirectory(prefix);
                 opticalSatellite.setTarGzSize(tarGzSize);
                 opticalSatellite.setTgLastModified(dateStr);
+                opticalSatellite.setOriginPath(absolutePath);
                 opSatService.create(opticalSatellite);
+                logger.info("optical satellite create: " + opticalSatellite.toString());
             }
         }
     }
@@ -98,6 +103,6 @@ public class FunctionController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String testConfig(){
         return Arrays.toString(systemConfig.getDATA_SOURCE()) + " : " + systemConfig.getUNTARGZ_PATH() + " : " +
-                systemConfig.getIMAGE_PATH();
+                systemConfig.getFILE_PATH();
     }
 }

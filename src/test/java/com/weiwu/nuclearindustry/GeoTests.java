@@ -1,11 +1,9 @@
 package com.weiwu.nuclearindustry;
 
 import com.weiwu.nuclearindustry.entity.OpticalSatellite;
-import com.weiwu.nuclearindustry.entity.User;
 import com.weiwu.nuclearindustry.entity.WorldBoundary;
 import com.weiwu.nuclearindustry.repositories.OpticalSatelliteRepository;
-import com.weiwu.nuclearindustry.repositories.UserRepository;
-import com.weiwu.nuclearindustry.repositories.WorldBoundaryRepository;
+import com.weiwu.nuclearindustry.repositories.GeometryWorldRepository;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +15,13 @@ import java.util.Optional;
 public class GeoTests {
 
     @Autowired
-    private WorldBoundaryRepository worldBoundaryRepository;
+    private GeometryWorldRepository geometryWorldRepository;
     @Autowired
     private OpticalSatelliteRepository opticalSatelliteRepository;
 
     @Test
     public void testPostGIS(){
-        Optional<WorldBoundary> byId = worldBoundaryRepository.findById(1L);
+        Optional<WorldBoundary> byId = geometryWorldRepository.findById(1L);
         System.out.println(byId.isPresent() + ":" + byId.toString());
         if(byId.isPresent()){
             WorldBoundary worldBoundary = byId.get();

@@ -131,4 +131,46 @@ public class RadarSatellite {
 
     @Column(length = 64)
     private String tgLastModified;
+
+    @Column(columnDefinition = "text")
+    private String originPath;
+
+    @Override
+    public String toString() {
+        return "RadarSatellite{" +
+                "satellite='" + satellite + '\'' +
+                ", sensorID='" + sensorID + '\'' +
+                ", imagingMode='" + imagingMode + '\'' +
+                ", orbitID='" + orbitID + '\'' +
+                ", orbitType='" + orbitType + '\'' +
+                ", attiType='" + attiType + '\'' +
+                ", station='" + station + '\'' +
+                ", receiveTime='" + receiveTime + '\'' +
+                ", sceneID='" + sceneID + '\'' +
+                ", productID='" + productID + '\'' +
+                ", waveCode='" + waveCode + '\'' +
+                ", nominalResolution='" + nominalResolution + '\'' +
+                ", widthInMeters='" + widthInMeters + '\'' +
+                ", productLevel='" + productLevel + '\'' +
+                ", productType='" + productType + '\'' +
+                ", productFormat='" + productFormat + '\'' +
+                ", sceneShift='" + sceneShift + '\'' +
+                ", earthModel='" + earthModel + '\'' +
+                ", projectModel='" + projectModel + '\'' +
+                ", dEMModel='" + dEMModel + '\'' +
+                ", centerTime='" + centerTime + '\'' +
+                ", imagingStart='" + imagingStart + '\'' +
+                ", imagingEnd='" + imagingEnd + '\'' +
+                ", centerLatitude='" + centerLatitude + '\'' +
+                ", centerLongitude='" + centerLongitude + '\'' +
+                ", topLeftLatitude='" + topLeftLatitude + '\'' +
+                ", topLeftLongitude='" + topLeftLongitude + '\'' +
+                ", topRightLatitude='" + topRightLatitude + '\'' +
+                ", topRightLongitude='" + topRightLongitude + '\'' +
+                ", bottomLeftLatitude='" + bottomLeftLatitude + '\'' +
+                ", bottomLeftLongitude='" + bottomLeftLongitude + '\'' +
+                ", bottomRightLatitude='" + bottomRightLatitude + '\'' +
+                ", bottomRightLongitude='" + bottomRightLongitude + '\'' +
+                '}';
+    }
 }

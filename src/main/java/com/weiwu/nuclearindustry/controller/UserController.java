@@ -34,6 +34,12 @@ public class UserController {
         return (List<User>) userRepository.findAll();
     }
 
+    @RequestMapping(value = "/batch",method = RequestMethod.POST)
+    public List<User> saveBatch(@RequestBody List<User> users){
+        userRepository.saveAll(users);
+        return (List<User>) userRepository.findAll();
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public List<User> delete(@PathVariable Long id){
         userRepository.deleteById(id);

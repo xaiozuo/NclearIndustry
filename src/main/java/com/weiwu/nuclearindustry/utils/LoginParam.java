@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class LoginParam implements Serializable {
-    private String username;
+    private String phoneNumber;
     private String password;
 }

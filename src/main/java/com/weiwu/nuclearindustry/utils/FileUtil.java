@@ -76,29 +76,38 @@ public class FileUtil {
      * @param object
      */
     @SneakyThrows
-    public static void doXml(File file, String directoryName, Object object) {
+    public static void doXml(String filePath, File file, String directoryName, Object object) {
+        String newPath = filePath + File.separator + directoryName + File.separator + file.getName();
+        File newFile = new File(newPath);
         String fileName = file.getName();
         String prefix = fileName.substring(0, fileName.lastIndexOf("."));
         if (fileName.startsWith("GF3") || fileName.startsWith("ZY") ||
                 prefix.equals(directoryName) || prefix.contains(directoryName)) {
             BeanUtil.build(new XmlParser(), file, object);
+            FileUtils.copyFile(file, newFile);
         }
     }
 
-    public static void doFiles(String imagesPath, File[] files, String directoryName, Object object)  {
+    public static void doFiles(String filesPath, File[] files, String directoryName, Object object)  {
         for (File file : files) {
             String fileName = file.getName();
             if (fileName.endsWith("jpg") || fileName.endsWith("xml")) {
                 if (fileName.endsWith("xml")) {
-                    doXml(file, directoryName, object);
+                    doXml(filesPath, file, directoryName, object);
                 }
                 if (fileName.endsWith("jpg")) {
-                    doJpg(imagesPath, file, directoryName, object);
+                    doJpg(filesPath, file, directoryName, object);
                 }
             }
         }
     }
 
+    /**
+     * only decompress xml and jpg file
+     * @param unTarGzPath
+     * @param file
+     * @return
+     */
     @SneakyThrows
     public static File unTarGz(String unTarGzPath, File file){
         String fileName = file.getName();
@@ -159,5 +168,25 @@ public class FileUtil {
             throw new RuntimeException(e);
         }
         return file;
+    }
+
+    public static void deleteFile(String path){
+        File file = new File(path);
+        if(file.isFile() && file.exists()){
+            file.delete();
+        }
+    }
+
+    public static void deleteDir(File directory){
+        File[] files = directory.listFiles();
+        assert files != null;
+        for(File file : files){
+            if(file.isDirectory()){
+                deleteDir(file);
+            } else {
+                file.delete();
+            }
+        }
+        directory.delete();
     }
 }
