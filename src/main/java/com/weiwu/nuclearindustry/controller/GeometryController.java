@@ -1,5 +1,6 @@
 package com.weiwu.nuclearindustry.controller;
 
+import com.weiwu.nuclearindustry.repositories.CountryStatesRepository;
 import com.weiwu.nuclearindustry.repositories.GeometryChinaRepository;
 import com.weiwu.nuclearindustry.repositories.GeometryWorldRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,17 @@ public class GeometryController {
     private GeometryWorldRepository geometryWorldRepository;
     @Autowired
     private GeometryChinaRepository geometryChinaRepository;
+    @Autowired
+    private CountryStatesRepository countryStatesRepository;
 
     @RequestMapping(method = RequestMethod.GET, value = "/world/{nation}")
     public String queryByNation(@PathVariable String nation){
         return geometryWorldRepository.findByNationName(nation);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/country_states/{admin}/{name}")
+    public String queryByCountryStates(@PathVariable String admin, @PathVariable String name){
+        return countryStatesRepository.findByAdminAndName(admin, name);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/china/{province}/{city}/{county}")

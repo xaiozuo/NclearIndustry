@@ -13,9 +13,9 @@ server:
   port: 8088
 
 system:
-  files: D:\\sasmac\\files
-  untargz: D:\\sasmac\\untargz
-  datasource: \\HEXI-LT-2\\data,D:\\sasmac\\data,E:\\sasmac\\data
+  files: D:\sasmac\files
+  untargz: D:\sasmac\untargz
+  datasource: \\HEXI-LT-2\data,D:\sasmac\data
 
 #  username: postgres
 #  password: postgres

@@ -27,6 +27,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
     private static final XmlParser xmlParser = new XmlParser();
     private String filesPath;
     private String untargzPath;
+    private String[] dataSource;
 
     @Autowired
     OpSatService opSatService;
@@ -40,6 +41,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
         fileListener = this;
         fileListener.filesPath = systemConfig.getFILE_PATH();
         fileListener.untargzPath = systemConfig.getUNTARGZ_PATH();
+        fileListener.dataSource = systemConfig.getDATA_SOURCE();
     }
 
     public static final Logger logger = Logger.getLogger(FileListener.class.getName());
@@ -72,12 +74,22 @@ public class FileListener extends FileAlterationListenerAdaptor {
         logger.info("file directory delete: " + directory.getName());
     }
 
+    private String relativePath(String absolutePath, String[] dataSource){
+        for (int i = 0; i < dataSource.length; i++) {
+            String path = dataSource[i];
+            if(absolutePath.startsWith(path)){
+                return absolutePath.substring(path.length() + 1);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void onFileCreate(File file) {
         logger.info("new file create: " + file.getName());
         String fileName = file.getName();
         String absolutePath = file.getAbsolutePath();
-        System.out.println(file.getParent());
+        String relativePath = relativePath(absolutePath, fileListener.dataSource);
         long tarGzSize = file.length();
         long lastModified = file.lastModified();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -95,6 +107,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 radarSatellite.setTarGzSize(tarGzSize);
                 radarSatellite.setTgLastModified(dateStr);
                 radarSatellite.setOriginPath(absolutePath);
+                radarSatellite.setRelativePath(relativePath);
                 fileListener.raSatService.create(radarSatellite);
                 logger.info("radar satellite create: " + radarSatellite);
             }
@@ -113,6 +126,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                 opticalSatellite.setTarGzSize(tarGzSize);
                 opticalSatellite.setTgLastModified(dateStr);
                 opticalSatellite.setOriginPath(absolutePath);
+                opticalSatellite.setRelativePath(relativePath);
                 fileListener.opSatService.create(opticalSatellite);
                 logger.info("optical satellite create: " + opticalSatellite);
             }

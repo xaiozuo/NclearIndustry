@@ -135,6 +135,9 @@ public class RadarSatellite {
     @Column(columnDefinition = "text")
     private String originPath;
 
+    @Column(columnDefinition = "text")
+    private String relativePath;
+
     @Override
     public String toString() {
         return "RadarSatellite{" +
