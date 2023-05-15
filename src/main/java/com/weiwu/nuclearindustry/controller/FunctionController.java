@@ -3,7 +3,6 @@ package com.weiwu.nuclearindustry.controller;
 import com.weiwu.nuclearindustry.config.SystemConfig;
 import com.weiwu.nuclearindustry.entity.OpticalSatellite;
 import com.weiwu.nuclearindustry.entity.RadarSatellite;
-import com.weiwu.nuclearindustry.monitor.FileMonitor;
 import com.weiwu.nuclearindustry.service.OpSatService;
 import com.weiwu.nuclearindustry.service.RaSatService;
 import com.weiwu.nuclearindustry.utils.FileUtil;
@@ -13,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 @RestController
@@ -32,10 +34,13 @@ public class FunctionController {
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String initDB(){
         String[] dataSource = systemConfig.getDATA_SOURCE();
+        ExecutorService executor = Executors.newFixedThreadPool(1000);
         for (String s : dataSource) {
             File directory = new File(s);
-            queryDirectory(directory);
+            executor.execute(new FileParser(directory));
+//            queryDirectory(directory);
         }
+        executor.shutdown();
         return "success";
     }
 
@@ -77,7 +82,7 @@ public class FunctionController {
                 radarSatellite.setTgLastModified(dateStr);
                 radarSatellite.setOriginPath(absolutePath);
                 raSatService.create(radarSatellite);
-                logger.info("radar satellite create: " + radarSatellite.toString());
+                logger.info("radar satellite create: " + radarSatellite.getDirectory());
             }
             if (prefix.startsWith("GF1") ||
                     prefix.startsWith("GF2") ||
@@ -95,7 +100,7 @@ public class FunctionController {
                 opticalSatellite.setTgLastModified(dateStr);
                 opticalSatellite.setOriginPath(absolutePath);
                 opSatService.create(opticalSatellite);
-                logger.info("optical satellite create: " + opticalSatellite.toString());
+                logger.info("optical satellite create: " + opticalSatellite.getDirectory());
             }
         }
     }
@@ -104,5 +109,21 @@ public class FunctionController {
     public String testConfig(){
         return Arrays.toString(systemConfig.getDATA_SOURCE()) + " : " + systemConfig.getUNTARGZ_PATH() + " : " +
                 systemConfig.getFILE_PATH();
+    }
+
+    private class FileParser implements Runnable {
+        private final File directory;
+
+        public FileParser(File directory) {
+            this.directory = directory;
+        }
+        public void run() {
+            try {
+                FunctionController.this.queryDirectory(directory);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+            }
+        }
     }
 }

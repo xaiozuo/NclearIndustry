@@ -10,12 +10,12 @@ spring:
     show-sql: true
 
 server:
-  port: 8088
+  port: 8688
 
 system:
   files: D:\sasmac\files
   untargz: D:\sasmac\untargz
-  datasource: \\HEXI-LT-2\data,D:\sasmac\data
+  datasource: D:\sasmac\data
 
 #  username: postgres
 #  password: postgres

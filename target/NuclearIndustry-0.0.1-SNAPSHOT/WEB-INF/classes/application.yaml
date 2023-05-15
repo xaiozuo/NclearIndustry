@@ -15,7 +15,7 @@ server:
 system:
   files: D:\sasmac\files
   untargz: D:\sasmac\untargz
-  datasource: \\HEXI-LT-2\data,D:\sasmac\data
+  datasource: F:\sasmac\data
 
 #  username: postgres
 #  password: postgres
