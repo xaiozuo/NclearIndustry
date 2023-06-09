@@ -124,7 +124,7 @@ public class FileUtil {
                 tai = new TarArchiveInputStream(Files.newInputStream(file.toPath()));
             }
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1024 * 16]; //注意缓存的大小
             TarArchiveEntry entry;
             while((entry = tai.getNextTarEntry()) != null){
                 String entryName = entry.getName();
@@ -147,6 +147,11 @@ public class FileUtil {
                 }
             }
         }
+        return directory;
+    }
+
+    public static File unTarGzBy7Zip(String unTarGzPath, File file){
+        File directory = null;
         return directory;
     }
 

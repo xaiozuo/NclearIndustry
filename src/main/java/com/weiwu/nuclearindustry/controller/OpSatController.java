@@ -6,8 +6,17 @@ import com.weiwu.nuclearindustry.entity.User;
 import com.weiwu.nuclearindustry.repositories.OpticalSatelliteRepository;
 import com.weiwu.nuclearindustry.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +38,27 @@ public class OpSatController {
     @RequestMapping(method = RequestMethod.GET)
     public List<OpticalSatellite> query() {
         return (List<OpticalSatellite>) opticalSatelliteRepository.findAll();
+    }
+
+    Specification<OpticalSatellite> getSpecification(String type){
+        return new Specification<OpticalSatellite> (){
+            @Override
+            public Predicate toPredicate(Root<OpticalSatellite> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.like(criteriaBuilder.lower(root.get("satelliteID")) , "%" + type.toLowerCase() + "%");
+            }
+        };
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{type}/{page}")
+    public Page<OpticalSatellite> queryByPage(@PathVariable String type, @PathVariable int page) {
+        int pageSize = 10;
+        String sortBy = "satelliteID", sortOrder = "ASC";
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Specification<OpticalSatellite> spec = getSpecification(type);
+        Page<OpticalSatellite> sciencePropagandaPage = opticalSatelliteRepository.findAll(spec, pageable);
+        return sciencePropagandaPage;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -61,6 +91,7 @@ public class OpSatController {
             deleteByOne(opSa);
         }
     }
+
     private void deleteByBatch(List<OpticalSatellite> opSas){
         for (OpticalSatellite opSa : opSas) {
             deleteByOne(opSa);

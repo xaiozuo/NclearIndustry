@@ -12,11 +12,14 @@ import java.util.stream.Collectors;
 
 public class XmlParser {
 
-    private static final SAXReader saxReader = new SAXReader();
-    private Element rootElement; //root element
-    private Element resultElement; //element need to parse
+    private SAXReader saxReader = new SAXReader();
+    //root element
+    private Element rootElement;
+    //element need to parse
+    private Element resultElement;
 
-    public XmlParser(){}
+    public XmlParser() {
+    }
 
     private void makeElement(File file) throws DocumentException {
         Document document = saxReader.read(file);
@@ -25,6 +28,7 @@ public class XmlParser {
 
     /**
      * recursive traversal element
+     *
      * @param element
      * @param result
      */
@@ -43,10 +47,10 @@ public class XmlParser {
     public void queryElement(Element element, List<String> entries, List<String> result) {
         if (entries.contains(element.getName())) {
             String text = element.getTextTrim();
-            if(!text.isEmpty()) result.add(element.getName() + " " + text);
+            if (!text.isEmpty()) result.add(element.getName() + " " + text);
             List<Element> elements = element.elements();
             for (Element elm : elements) {
-                if(entries.contains(elm.getName())){
+                if (entries.contains(elm.getName())) {
                     String et = elm.getTextTrim();
                     if (!et.isEmpty()) result.add(elm.getName() + " " + et);
                     List<Element> elms = elm.elements();
@@ -61,10 +65,10 @@ public class XmlParser {
     public void queryElement(Element element, List<String> entries, Map<String, String> map) {
         if (entries.contains(element.getName())) {
             String text = element.getTextTrim();
-            if(!text.isEmpty()) map.put(element.getName(), text);
+            if (!text.isEmpty()) map.put(element.getName(), text);
             List<Element> elements = element.elements();
             for (Element elm : elements) {
-                if(entries.contains(elm.getName())){
+                if (entries.contains(elm.getName())) {
                     String et = elm.getTextTrim();
                     if (!et.isEmpty()) map.put(elm.getName(), et);
                     List<Element> elms = elm.elements();
@@ -80,10 +84,10 @@ public class XmlParser {
         if (entries.contains(element.getName())) {
             String text = element.getTextTrim();
             String name = parent != null ? parent.getName() + " " + element.getName() : element.getName();
-            if(!text.isEmpty()) map.put(name, text);
+            if (!text.isEmpty()) map.put(name, text);
             List<Element> elements = element.elements();
             for (Element elm : elements) {
-                if(entries.contains(elm.getName())){
+                if (entries.contains(elm.getName())) {
                     String et = elm.getTextTrim();
                     String en = element.getName() + " " + elm.getName();
                     if (!et.isEmpty()) map.put(en, et);
@@ -96,25 +100,25 @@ public class XmlParser {
         }
     }
 
-    private void findElement(Element rootElement, String elementName){
+    private void findElement(Element rootElement, String elementName) {
         String name = rootElement.getName();
-        if(name == elementName || resultElement != null){
-            if(resultElement == null){
+        if (name == elementName || resultElement != null) {
+            if (resultElement == null) {
                 resultElement = rootElement;
             }
             return;
         }
         List<Element> elements = rootElement.elements();
-        for (Element element : elements){
+        for (Element element : elements) {
             findElement(element, elementName);
         }
     }
 
-    public HashMap<String, String> mapFilter(HashMap<String, String> hashMap, Map<String, String> filter){
+    public HashMap<String, String> mapFilter(HashMap<String, String> hashMap, Map<String, String> filter) {
         HashMap<String, String> map = new HashMap<>();
-        hashMap.forEach((key, value)->{
+        hashMap.forEach((key, value) -> {
             String mKey = filter.get(key);
-            if(mKey != null){
+            if (mKey != null) {
                 map.put(mKey, value);
             } else {
                 String[] strings = key.split(" ");
@@ -129,22 +133,20 @@ public class XmlParser {
         makeElement(file);
         String fileName = file.getName();
         HashMap<String, String> hashMap = new HashMap<>();
-        if(fileName.startsWith("GF3")){
+        if (fileName.startsWith("GF3")) {
             List<String> entries = Arrays.stream(SystemConfig.GF3).collect(Collectors.toList());
-            if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
+            if (rootElement != null) queryElement(rootElement, null, entries, hashMap);
             hashMap = mapFilter(hashMap, SystemConfig.GF3Filter);
-        }
-        if(fileName.startsWith("zy")){
+        } else if (fileName.startsWith("zy") || fileName.startsWith("GF701")) {
             List<String> entries = Arrays.stream(SystemConfig.ZY).collect(Collectors.toList());
-            if(rootElement != null) queryElement(rootElement, null, entries, hashMap);
+            if (rootElement != null) queryElement(rootElement, null, entries, hashMap);
             hashMap = mapFilter(hashMap, SystemConfig.ZYFilter);
-        }
-        if(fileName.startsWith("GF1") || fileName.startsWith("GF2") || fileName.startsWith("GF4") ||
+        } else if (fileName.startsWith("GF1") || fileName.startsWith("GF2") || fileName.startsWith("GF4") ||
                 fileName.startsWith("GF5") || fileName.startsWith("GF6") || fileName.startsWith("GF7") ||
-                fileName.startsWith("ZY")){
+                fileName.startsWith("ZY")) {
             findElement(rootElement, "ProductMetaData");
             List<String> entries = Arrays.stream(SystemConfig.GF124567).collect(Collectors.toList());
-            if(resultElement != null) queryElement(resultElement, null, entries, hashMap);
+            if (resultElement != null) queryElement(resultElement, null, entries, hashMap);
         }
         return hashMap;
     }

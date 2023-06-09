@@ -15,7 +15,7 @@ server:
 system:
   files: D:\sasmac\files
   untargz: D:\sasmac\untargz
-  datasource: D:\sasmac\data
+  datasource: F:\sasmac,\\172.16.18.201\zionNAS
 
 #  username: postgres
 #  password: postgres

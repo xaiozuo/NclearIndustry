@@ -3,12 +3,20 @@ package com.weiwu.nuclearindustry.controller;
 import com.weiwu.nuclearindustry.config.SystemConfig;
 import com.weiwu.nuclearindustry.entity.OpticalSatellite;
 import com.weiwu.nuclearindustry.entity.RadarSatellite;
-import com.weiwu.nuclearindustry.entity.User;
 import com.weiwu.nuclearindustry.repositories.RadarSatelliteRepository;
 import com.weiwu.nuclearindustry.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +36,27 @@ public class RaSatController {
     @RequestMapping(method = RequestMethod.GET)
     public List<RadarSatellite> query(){
         return (List<RadarSatellite>) radarSatelliteRepository.findAll();
+    }
+
+    Specification<RadarSatellite> getSpecification(String type){
+        return new Specification<RadarSatellite> (){
+            @Override
+            public Predicate toPredicate(Root<RadarSatellite> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.like(criteriaBuilder.lower(root.get("satellite")) , "%" + type.toLowerCase() + "%");
+            }
+        };
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{type}/{page}")
+    public Page<RadarSatellite> queryByPage(@PathVariable String type, @PathVariable int page) {
+        int pageSize = 10;
+        String sortBy = "satellite", sortOrder = "ASC";
+        Sort sort = sortOrder.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Specification<RadarSatellite> spec = getSpecification(type);
+        Page<RadarSatellite> sciencePropagandaPage = radarSatelliteRepository.findAll(spec, pageable);
+        return sciencePropagandaPage;
     }
 
     @RequestMapping(method = RequestMethod.POST)
