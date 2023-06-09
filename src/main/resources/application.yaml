@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 12345678
-    url: jdbc:postgresql://localhost:5432/nuclear
+    url: jdbc:postgresql://localhost:5432/nuclear_real
     tomcat:
       max-active: 2048
       min-idle: 512
