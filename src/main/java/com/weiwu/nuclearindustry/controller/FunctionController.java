@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @RestController
@@ -30,20 +31,33 @@ public class FunctionController {
     private RaSatService raSatService;
     @Autowired
     private SystemConfig systemConfig;
-    ExecutorService executor = Executors.newFixedThreadPool(25);
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String initDB() {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
         String[] dataSource = systemConfig.getDATA_SOURCE();
         for (String s : dataSource) {
             File directory = new File(s);
-            queryDirectory(directory);
+            queryDirectory(executor, directory);
         }
         executor.shutdown();
-        return "start initial and initializing";
+
+        // 判断任务是否全部完成
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            boolean allTasksCompleted = executor.isTerminated();
+            if (allTasksCompleted) {
+                logger.info("所有任务已完成");
+            } else {
+                logger.info("还有任务在执行");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "all task finished.";
     }
 
-    private void queryDirectory(File directory) {
+    private void queryDirectory(ExecutorService executor, File directory) {
         File unTarGzDir = new File(systemConfig.getUNTARGZ_PATH());
         String[] filenames = unTarGzDir.list();
         assert filenames != null;
@@ -58,30 +72,30 @@ public class FunctionController {
                     if (fileName.endsWith(".tar.gz") || fileName.endsWith(".tar")) {
                         String prefixName = FileUtil.filePrefixName(fileName);
                         if (!filenameSet.contains(prefixName)) {
-                            doTask(file);
+                            doTask(executor, file);
                         }
                     }
                 } else if (file.isDirectory() && file.exists()) {
-                    queryDirectory(file);
+                    queryDirectory(executor, file);
                 }
             }
         }
     }
 
-    private void doTask(File file) {
+    private void doTask(ExecutorService executor, File file) {
         Runnable task = () -> {
+            printFile(file);
             doTarGz(file);
         };
         executor.submit(task);
     }
 
     private void printFile(File file) {
-        System.out.println(file.getName());
+        logger.info(file.getName());
     }
 
     private String relativePath(String absolutePath, String[] dataSource) {
-        for (int i = 0; i < dataSource.length; i++) {
-            String path = dataSource[i];
+        for (String path : dataSource) {
             if (absolutePath.startsWith(path)) {
                 return absolutePath.substring(path.length() + 1);
             }
@@ -148,20 +162,4 @@ public class FunctionController {
                 systemConfig.getFILE_PATH();
     }
 
-    private class FileParser implements Runnable {
-        private final File directory;
-
-        public FileParser(File directory) {
-            this.directory = directory;
-        }
-
-        public void run() {
-            try {
-                FunctionController.this.queryDirectory(directory);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-            }
-        }
-    }
 }

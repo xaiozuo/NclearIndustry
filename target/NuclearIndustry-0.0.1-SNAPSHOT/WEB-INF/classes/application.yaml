@@ -4,19 +4,23 @@ spring:
     username: postgres
     password: 12345678
     url: jdbc:postgresql://localhost:5432/nuclear
+    tomcat:
+      max-active: 2048
+      min-idle: 512
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
 server:
+  servlet:
+    context-parameters:
+      Xmx: 2g
   port: 8688
 
 system:
   files: D:\sasmac\files
   untargz: D:\sasmac\untargz
-  datasource: F:\sasmac,\\172.16.18.201\zionNAS
+  datasource: E:\sasmac\data
+#  datasource: F:\sasmac,\\172.16.18.201\zionNAS
 
-#  username: postgres
-#  password: postgres
-#  url: jdbc:postgresql://hexi_postgres:5440/nuclear
