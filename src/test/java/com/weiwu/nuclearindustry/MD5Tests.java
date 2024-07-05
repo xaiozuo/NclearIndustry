@@ -7,7 +7,7 @@ public class MD5Tests {
 
     @Test
     public void testMd5(){
-        String name = "weir";
+        String name = "admin";
         String str = "12345678";
         System.out.println(MD5Util.md5(name));
         System.out.println(MD5Util.md5(str));

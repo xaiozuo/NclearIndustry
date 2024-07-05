@@ -21,6 +21,6 @@ server:
 system:
   files: D:\sasmac\files
   untargz: D:\sasmac\untargz
-  datasource: E:\sasmac\data
-#  datasource: F:\sasmac,\\172.16.18.201\zionNAS
+#  datasource: E:\sasmac\data
+  datasource: F:\sasmac,\\172.16.18.201\zionNAS,E:\sasmac\data,D:\sasmac\data,\\HEXI-WS-2\zy3立体原始数据
 

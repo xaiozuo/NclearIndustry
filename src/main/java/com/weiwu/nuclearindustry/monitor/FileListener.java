@@ -98,6 +98,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
             String dateStr = simpleDateFormat.format(date);
             String prefix = FileUtil.filePrefixName(fileName);
             File directory = FileUtil.unTarGz(fileListener.untargzPath, file);
+            System.out.println(directory);
             if(directory != null) {
                 File[] files = directory.listFiles();
                 if (prefix.startsWith("GF3")) {
@@ -152,18 +153,28 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
     @Override
     public void onFileCreate(File file) {
-        doTask(file, 10L);
+        if (!file.getName().endsWith(".downloading")) {  // 新增条件判断
+            doTask(file, 10L);
+        }
+//        doTask(file, 10L);
     }
 
     @Override
     public void onFileChange(File file) {
-        logger.info("file change: " + file.getName());
-        doTask(file, 1L);
+//        logger.info("file change: " + file.getName());
+//        doTask(file, 1L);
+        if (!file.getName().endsWith(".downloading")) {  // 新增条件判断
+            logger.info("file change: " + file.getName());
+            doTask(file, 1L);
+        }
     }
 
     @Override
     public void onFileDelete(File file) {
-        logger.info("file delete: " + file.getName());
+//        logger.info("file delete: " + file.getName());
+        if (!file.getName().endsWith(".downloading")) {  // 新增条件判断
+            logger.info("file delete: " + file.getName());
+        }
     }
 
     @Override

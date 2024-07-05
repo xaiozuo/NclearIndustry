@@ -21,7 +21,7 @@ public class FileMonitor {
 
     @PostConstruct
     private void init(){
-        int time = 1;
+        int time = 10; //each loop per 10 seconds
         long interval = TimeUnit.SECONDS.toMillis(time);
 
         logger.info("init file monitor...");

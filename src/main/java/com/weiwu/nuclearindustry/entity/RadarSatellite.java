@@ -176,4 +176,31 @@ public class RadarSatellite {
                 ", bottomRightLongitude='" + bottomRightLongitude + '\'' +
                 '}';
     }
+    public String toString1() {
+        return "RadarSatellite{" +
+                "satellite='" + satellite + '\'' +
+                ", sensorID='" + sensorID + '\'' +
+                ", imagingMode='" + imagingMode + '\'' +
+                ", orbitID='" + orbitID + '\'' +
+                ", orbitType='" + orbitType + '\'' +
+                ", attiType='" + attiType + '\'' +
+                ", station='" + station + '\'' +
+                ", receiveTime='" + receiveTime + '\'' +
+                ", sceneID='" + sceneID + '\'' +
+                ", productID='" + productID + '\'' +
+                ", waveCode='" + waveCode + '\'' +
+                ", nominalResolution='" + nominalResolution + '\'' +
+                ", widthInMeters='" + widthInMeters + '\'' +
+                ", productLevel='" + productLevel + '\'' +
+                ", productType='" + productType + '\'' +
+                ", productFormat='" + productFormat + '\'' +
+                ", sceneShift='" + sceneShift + '\'' +
+                ", earthModel='" + earthModel + '\'' +
+                ", projectModel='" + projectModel + '\'' +
+                ", dEMModel='" + dEMModel + '\'' +
+                ", centerTime='" + centerTime + '\'' +
+                ", imagingStart='" + imagingStart + '\'' +
+                ", imagingEnd='" + imagingEnd + '\'' +
+                "}";
+    }
 }
